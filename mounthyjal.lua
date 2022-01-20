@@ -70,7 +70,7 @@ local items = {
   [30906] = {boss = 622, slot = 17, xtype = 12, account = 6, cost = 500, note = "BiS: Hu Opt:"}, -- Bristleblitz Striker
   [30907] = {boss = 622, slot =  5, xtype =  3, account = 6, cost = 200, note = "Opt: Hu"}, -- Mail of Fevered Pursuit
   [30908] = {boss = 622, slot = 16, xtype = 10, account = 6, cost = 300, note = "Opt: HDr HPr HSh"}, -- Apostle of Argus
-  [30909] = {boss = 622, slot = 15, xtype = 17, account = 6, cost = 500, note = "BiS: RSh Opt: TPa"}, -- Antonidas's Aegis of Rapt Concentration
+  [30909] = {boss = 622, slot = 15, xtype = 17, account = 6, cost = 250, note = "BiS: Opt: TPa RSh"}, -- Antonidas's Aegis of Rapt Concentration
   [30910] = {boss = 622, slot = 14, xtype =  6, account = 6, cost = 500, note = "BiS: TPa Opt: Arcane Fire Affli Destro"}, -- Tempest of Chaos
   [30911] = {boss = 622, slot = 15, xtype =  0, account = 6, cost = 400, note = "BiS: HDr HPr Opt: HPa HSh"}, -- Scepter of Purification
   [30912] = {boss = 622, slot =  9, xtype =  1, account = 6, cost = 400, note = "BiS: HDr HPr Opt: HPa HSh"}, -- Leggings of Eternity
