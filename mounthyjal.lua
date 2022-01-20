@@ -88,14 +88,14 @@ local items = {
   [32945] = {boss =   1, slot = 15, xtype = 11, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out"}, -- Fist of Molten Fury
   
   -- Patterns:
-  [32285] = {boss =   1, slot =  0, xtype =  0, account = 6, cost = 200, note = "BiS: Opt:"}, -- Design: Flashing Crimson Spinel
-  [32296] = {boss =   1, slot =  0, xtype =  0, account = 6, cost = 200, note = "BiS: Opt:"}, -- Design: Great Lionseye
-  [32303] = {boss =   1, slot =  0, xtype =  0, account = 6, cost = 200, note = "BiS: Opt:"}, -- Design: Inscribed Pyrestone
-  [32295] = {boss =   1, slot =  0, xtype =  0, account = 6, cost = 200, note = "BiS: Opt:"}, -- Design: Mystic Lionseye
-  [32298] = {boss =   1, slot =  0, xtype =  0, account = 6, cost = 200, note = "BiS: Opt:"}, -- Design: Shifting Shadowsong Amethyst
-  [32297] = {boss =   1, slot =  0, xtype =  0, account = 6, cost = 200, note = "BiS: Opt:"}, -- Design: Sovereign Shadowsong Amethyst
-  [32289] = {boss =   1, slot =  0, xtype =  0, account = 6, cost = 200, note = "BiS: Opt:"}, -- Design: Stormy Empyrean Sapphire
-  [32307] = {boss =   1, slot =  0, xtype =  0, account = 6, cost = 200, note = "BiS: Opt:"}, -- Design: Veiled Pyrestone
+  [32285] = {boss =   1, slot =  0, xtype =  0, account = 6, cost =   0, note = "BiS: Opt:"}, -- Design: Flashing Crimson Spinel
+  [32296] = {boss =   1, slot =  0, xtype =  0, account = 6, cost =   0, note = "BiS: Opt:"}, -- Design: Great Lionseye
+  [32303] = {boss =   1, slot =  0, xtype =  0, account = 6, cost =   0, note = "BiS: Opt:"}, -- Design: Inscribed Pyrestone
+  [32295] = {boss =   1, slot =  0, xtype =  0, account = 6, cost =   0, note = "BiS: Opt:"}, -- Design: Mystic Lionseye
+  [32298] = {boss =   1, slot =  0, xtype =  0, account = 6, cost =   0, note = "BiS: Opt:"}, -- Design: Shifting Shadowsong Amethyst
+  [32297] = {boss =   1, slot =  0, xtype =  0, account = 6, cost =   0, note = "BiS: Opt:"}, -- Design: Sovereign Shadowsong Amethyst
+  [32289] = {boss =   1, slot =  0, xtype =  0, account = 6, cost =   0, note = "BiS: Opt:"}, -- Design: Stormy Empyrean Sapphire
+  [32307] = {boss =   1, slot =  0, xtype =  0, account = 6, cost =   0, note = "BiS: Opt:"}, -- Design: Veiled Pyrestone
 }
 
 ------------------------------------------------------------
