@@ -7,14 +7,14 @@ local items = {
   -- Tokens:
   [31092] = {boss = 621, slot =  7, xtype = 18, account = 6, cost = 200, note = "BiS: TPa HPr RPr Affli Destro Opt: HPa"}, -- Gloves of the Forgotten Conqueror
   [31093] = {boss = 621, slot =  7, xtype = 18, account = 6, cost = 200, note = "BiS: RDr TDr MDr Fire Ro Opt: HDr"}, -- Gloves of the Forgotten Vanquisher
-  [31094] = {boss = 621, slot =  7, xtype = 18, account = 6, cost = 200, note = "BiS: Hu RSh MSh Opt: HSh Arms Fury TWa"}, -- Gloves of the Forgotten Protector
+  [31094] = {boss = 621, slot =  7, xtype = 18, account = 6, cost = 200, note = "BiS: Hu RSh Opt: HSh Arms Fury TWa"}, -- Gloves of the Forgotten Protector
   [31095] = {boss = 622, slot =  1, xtype = 18, account = 6, cost = 300, note = "BiS: Hu RSh HSh Opt: MSh Arms Fury TWa"}, -- Helm of the Forgotten Protector
   [31096] = {boss = 622, slot =  1, xtype = 18, account = 6, cost = 300, note = "BiS: RDr TDr HDr Ro Opt: MDr Fire"}, -- Helm of the Forgotten Vanquisher
   [31097] = {boss = 622, slot =  1, xtype = 18, account = 6, cost = 300, note = "BiS: HPa HPr RPr Affli Destro Opt: TPa MPa"}, -- Helm of the Forgotten Conqueror
   
   -- Rage Winterchill:
   [30861] = {boss = 618, slot =  6, xtype =  4, account = 6, cost = 100, note = "Opt: MPa Arms"}, -- Furious Shackles
-  [30862] = {boss = 618, slot =  6, xtype =  4, account = 6, cost = 200, note = "BiS: HPa Opt:"}, -- Blessed Adamantite Bracers
+  [30862] = {boss = 618, slot =  6, xtype =  4, account = 6, cost = 200, note = "BiS: HPa"}, -- Blessed Adamantite Bracers
   [30863] = {boss = 618, slot =  6, xtype =  2, account = 6, cost = 200, note = "BiS: Arms Fury Opt: TDr MDr Hu MPa Ro MSh"}, -- Deadly Cuffs
   [30864] = {boss = 618, slot =  6, xtype =  3, account = 6, cost = 100, note = "Opt: Hu"}, -- Bracers of the Pathfinder
   [30865] = {boss = 618, slot = 13, xtype =  5, account = 6, cost = 200, note = "Opt: Hu"}, -- Tracker's Blade
@@ -31,9 +31,9 @@ local items = {
   [30878] = {boss = 619, slot =  3, xtype =  4, account = 6, cost = 150, note = "Opt: HPa"}, -- Glimmering Steel Mantle
   [30879] = {boss = 619, slot =  8, xtype =  2, account = 6, cost = 300, note = "BiS: Hu Opt: TDr MDr Ro MSh Arms Fury"}, -- Don Alejandro's Money Belt
   [30880] = {boss = 619, slot = 10, xtype =  3, account = 6, cost = 400, note = "BiS: Hu Opt: Ro Fury"}, -- Blade of Infamy
-  [30882] = {boss = 619, slot = 13, xtype =  6, account = 6, cost = 400, note = "BiS: HSh Opt: HPa"}, -- Bastion of Light
-  [30883] = {boss = 619, slot = 15, xtype = 17, account = 6, cost = 600, note = "BiS: TDr MDr Opt:"}, -- Pillar of Ferocity
-  [30884] = {boss = 619, slot =  3, xtype =  1, account = 6, cost = 300, note = "BiS: Arcane Opt: RDr Fire RPr RSh Affli Destro"}, -- Hatefury Mantle
+  [30882] = {boss = 619, slot = 13, xtype =  6, account = 6, cost = 400, note = "BiS: HSh HPa"}, -- Bastion of Light
+  [30883] = {boss = 619, slot = 15, xtype = 17, account = 6, cost = 600, note = "BiS: TDr MDr"}, -- Pillar of Ferocity
+  [30884] = {boss = 619, slot =  3, xtype =  1, account = 6, cost = 300, note = "Opt: RDr Fire RPr RSh Affli Destro"}, -- Hatefury Mantle
   [30885] = {boss = 619, slot = 10, xtype =  1, account = 6, cost = 150, note = "Opt: HDr"}, -- Archbishop's Slippers
   [30886] = {boss = 619, slot = 10, xtype =  2, account = 6, cost = 150, note = "Opt: HDr"}, -- Enchanted Leather Sandals
   [30880] = {boss = 619, slot = 10, xtype =  3, account = 6, cost = 150, note = "Opt: Hu MPa MSh Fury"}, -- Quickstrider Moccasins
@@ -43,11 +43,11 @@ local items = {
   -- Kaz'rogal:
   [30889] = {boss = 620, slot = 15, xtype = 17, account = 6, cost = 250, note = "Opt: TPa TWa"}, -- Kaz'rogal's Hardened Heart
   [30891] = {boss = 620, slot = 10, xtype =  2, account = 6, cost = 150, note = "Opt: MDr Hu MPa Ro Arms"}, -- Black Featherlight Boots
-  [30892] = {boss = 620, slot =  3, xtype =  3, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out"}, -- Beast-tamer's Shoulders
+  [30892] = {boss = 620, slot =  3, xtype =  3, account = 6, cost =   0, note = "Opt: Hu"}, -- Beast-tamer's Shoulders
   [30893] = {boss = 620, slot =  9, xtype =  3, account = 6, cost = 250, note = "Opt: HPa HSh"}, -- Sun-touched Chain Leggings
   [30894] = {boss = 620, slot = 10, xtype =  1, account = 6, cost = 150, note = "Opt: RDr Arcane Fire RPr RSh Affli Destro"}, -- Blue Suede Shoes
   [30895] = {boss = 620, slot =  8, xtype =  1, account = 6, cost = 350, note = "BiS: HPr Opt: HDr HPa HSh"}, -- Angelista's Sash
-  [30914] = {boss = 620, slot =  8, xtype =  2, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out"}, -- Belt of the Crescent Moon
+  [30914] = {boss = 620, slot =  8, xtype =  2, account = 6, cost =   0, note = "Opt: RDr"}, -- Belt of the Crescent Moon
   [30915] = {boss = 620, slot =  8, xtype =  4, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out"}, -- Belt of Seething Fury
   [30916] = {boss = 620, slot =  9, xtype =  1, account = 6, cost = 400, note = "BiS: RDr RPr RSh Opt: Arcane Fire Affli Destro"}, -- Leggings of Channeled Elements
   [30917] = {boss = 620, slot =  3, xtype =  2, account = 6, cost = 150, note = "Opt: TDr"}, -- Razorfury Mantle
