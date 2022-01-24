@@ -8,7 +8,7 @@ local items = {
   [31092] = {boss = 621, slot =  7, xtype = 18, account = 6, cost = 250, note = "BiS: TPa HPr RPr Affli Destro"}, -- Gloves of the Forgotten Conqueror
   [31093] = {boss = 621, slot =  7, xtype = 18, account = 6, cost = 250, note = "BiS: RDr TDr MDr Fire Ro Opt: HDr"}, -- Gloves of the Forgotten Vanquisher
   [31094] = {boss = 621, slot =  7, xtype = 18, account = 6, cost = 250, note = "BiS: Hu RSh Prot Opt: Fury"}, -- Gloves of the Forgotten Protector
-  [31095] = {boss = 622, slot =  1, xtype = 18, account = 6, cost = 300, note = "BiS: Hu RSh HSh Prot Opt: MSh"}, -- Helm of the Forgotten Protector
+  [31095] = {boss = 622, slot =  1, xtype = 18, account = 6, cost = 300, note = "BiS: Surv RSh HSh Prot Opt: MSh"}, -- Helm of the Forgotten Protector
   [31096] = {boss = 622, slot =  1, xtype = 18, account = 6, cost = 300, note = "BiS: RDr TDr HDr Ro Opt: MDr Fire"}, -- Helm of the Forgotten Vanquisher
   [31097] = {boss = 622, slot =  1, xtype = 18, account = 6, cost = 300, note = "BiS: HPa TPa HPr RPr Affli Destro Opt: MPa"}, -- Helm of the Forgotten Conqueror
   
@@ -30,9 +30,9 @@ local items = {
   [30874] = {boss = 619, slot = 13, xtype =  6, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out"}, -- The Unbreakable Will
   [30878] = {boss = 619, slot =  3, xtype =  4, account = 6, cost = 150, note = "Opt: HPa"}, -- Glimmering Steel Mantle
   [30879] = {boss = 619, slot =  8, xtype =  2, account = 6, cost = 300, note = "BiS: Hu Opt: TDr MDr Ro MSh Fury"}, -- Don Alejandro's Money Belt
-  [30880] = {boss = 619, slot = 10, xtype =  3, account = 6, cost = 400, note = "BiS: Hu Opt: Ro Fury"}, -- Blade of Infamy
-  [30882] = {boss = 619, slot = 13, xtype =  6, account = 6, cost = 400, note = "BiS: HSh HPa"}, -- Bastion of Light
-  [30883] = {boss = 619, slot = 15, xtype = 17, account = 6, cost = 600, note = "BiS: TDr MDr"}, -- Pillar of Ferocity
+  [30881] = {boss = 619, slot = 13, xtype =  6, account = 6, cost = 400, note = "BiS: Hu Opt: Ro Fury"}, -- Blade of Infamy
+  [30882] = {boss = 619, slot = 15, xtype = 17, account = 6, cost = 400, note = "BiS: HSh HPa"}, -- Bastion of Light
+  [30883] = {boss = 619, slot = 16, xtype = 10, account = 6, cost = 600, note = "BiS: TDr MDr"}, -- Pillar of Ferocity
   [30884] = {boss = 619, slot =  3, xtype =  1, account = 6, cost = 150, note = "Opt: RDr Fire RPr RSh Destro"}, -- Hatefury Mantle
   [30885] = {boss = 619, slot = 10, xtype =  1, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out or DE"}, -- Archbishop's Slippers
   [30886] = {boss = 619, slot = 10, xtype =  2, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out or DE"}, -- Enchanted Leather Sandals
@@ -57,7 +57,7 @@ local items = {
   -- Azgalor:
   [30896] = {boss = 621, slot =  5, xtype =  4, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out or DE"}, -- Glory of the Defender
   [30897] = {boss = 621, slot =  8, xtype =  4, account = 6, cost = 350, note = "BiS: HPa Opt:"}, -- Girdle of Hope
-  [30898] = {boss = 621, slot =  9, xtype =  2, account = 6, cost = 250, note = "Opt: MDr MSh Fury"}, -- Shady Dealer's Pantaloons
+  [30898] = {boss = 621, slot =  9, xtype =  2, account = 6, cost = 250, note = "Opt: BM/MM MDr MSh Fury"}, -- Shady Dealer's Pantaloons
   [30899] = {boss = 621, slot =  5, xtype =  2, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out or DE"}, -- Don Rodrigo's Poncho
   [30900] = {boss = 621, slot =  9, xtype =  3, account = 6, cost = 400, note = "BiS: Hu MSh MPa"}, -- Bow-stitched Leggings
   [30901] = {boss = 621, slot = 13, xtype =  5, account = 6, cost = 400, note = "BiS: Hu"}, -- Boundless Agony

@@ -10,7 +10,7 @@ local items = {
   [31091] = {boss = 609, slot =  5, xtype = 18, account = 6, cost = 450, note = "BiS: Hu HSh Arns Fury Prot Opt: RSh"}, -- Chestguard of the Forgotten Protector
   [31098] = {boss = 608, slot =  9, xtype = 18, account = 6, cost = 400, note = "BiS: HPa TPa RPr Affli Destro Opt: HPr"}, -- Leggings of the Forgotten Conqueror
   [31099] = {boss = 608, slot =  9, xtype = 18, account = 6, cost = 400, note = "BiS: TDr MDr Arcane Fire Ro"}, -- Leggings of the Forgotten Vanquisher
-  [31100] = {boss = 608, slot =  9, xtype = 18, account = 6, cost = 400, note = "BiS: BM/MM RSh HSh Prot Opt: Arms Fury"}, -- Leggings of the Forgotten Protector
+  [31100] = {boss = 608, slot =  9, xtype = 18, account = 6, cost = 400, note = "BiS: Hu RSh HSh Prot Opt: Arms Fury"}, -- Leggings of the Forgotten Protector
   [31101] = {boss = 607, slot =  3, xtype = 18, account = 6, cost = 350, note = "BiS: HPa TPa HPr RPr Affli Destro"}, -- Pauldrons of the Forgotten Conqueror
   [31102] = {boss = 607, slot =  3, xtype = 18, account = 6, cost = 350, note = "BiS: RDr TDr MDr HDr Fire Ro"}, -- Pauldrons of the Forgotten Vanquisher
   [31103] = {boss = 607, slot =  3, xtype = 18, account = 6, cost = 350, note = "BiS: RSh HSh Arns Fury Prot"}, -- Pauldrons of the Forgotten Protector
@@ -50,7 +50,7 @@ local items = {
   [32263] = {boss = 603, slot =  9, xtype =  4, account = 6, cost =   0, note = "NOT BIS FOR ANYONE, Roll it out or DE"}, -- Praetorian's Legguards
   [32264] = {boss = 603, slot =  3, xtype =  3, account = 6, cost = 150, note = "Opt: Surv"}, -- Shoulders of the Hidden Predator
   [32265] = {boss = 603, slot =  8, xtype =  2, account = 6, cost = 150, note = "Opt: BM/MM MSh"}, -- Shadow-walker's Cord
-  [32266] = {boss = 603, slot = 11, xtype =  0, account = 6, cost = 350, note = "BiS: TDr"}, -- Ring of Deceitful Intent
+  [32266] = {boss = 603, slot = 11, xtype =  0, account = 6, cost = 350, note = "BiS: TDr Hu"}, -- Ring of Deceitful Intent
   [32268] = {boss = 603, slot = 10, xtype =  4, account = 6, cost = 400, note = "BiS: Prot"}, -- Myrmidon's Treads
   [32270] = {boss = 603, slot =  6, xtype =  1, account = 6, cost = 100, note = "Opt: Arcane Fire RPr RSh Affli Destro"}, -- Focused Mana Bindings
   [32271] = {boss = 603, slot =  9, xtype =  2, account = 6, cost = 250, note = "Opt: HDr HSh"}, -- Kilt of Immortal Nature
@@ -123,7 +123,7 @@ local items = {
   [32519] = {boss = 608, slot =  8, xtype =  1, account = 6, cost = 150, note = "Opt: HDr HPr"}, -- Belt of Divine Guidance
 
   -- Illidan Stormrage:
-  [32235] = {boss = 609, slot =  1, xtype =  2, account = 6, cost = 300, note = "BiS: Hu MPa Ro MSh Arms Fury"}, -- Cursed Vision of Sargeras
+  [32235] = {boss = 609, slot =  1, xtype =  2, account = 6, cost = 300, note = "BiS: BM/MM MPa Ro MSh Arms Fury"}, -- Cursed Vision of Sargeras
   [32336] = {boss = 609, slot = 17, xtype = 12, account = 6, cost = 300, note = "Opt: Hu"}, -- Black Bow of the Betrayer
   [32374] = {boss = 609, slot = 16, xtype = 10, account = 6, cost = 600, note = "BiS: RDr Arcane Fire RPr RSh Affli Destro"}, -- Zhar'doom, Greatstaff of the Devourer
   [32375] = {boss = 609, slot = 15, xtype = 17, account = 6, cost = 400, note = "BiS: TPa Prot"}, -- Bulwark of Azzinoth
