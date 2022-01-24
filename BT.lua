@@ -127,7 +127,7 @@ local items = {
   [32336] = {boss = 609, slot = 17, xtype = 12, account = 6, cost = 300, note = "Opt: Hu"}, -- Black Bow of the Betrayer
   [32374] = {boss = 609, slot = 16, xtype = 10, account = 6, cost = 600, note = "BiS: RDr Arcane Fire RPr RSh Affli Destro"}, -- Zhar'doom, Greatstaff of the Devourer
   [32375] = {boss = 609, slot = 15, xtype = 17, account = 6, cost = 400, note = "BiS: TPa Prot"}, -- Bulwark of Azzinoth
-  [32471] = {boss = 609, slot = 13, xtype =  5, account = 6, cost =   0, note = "BiS: Ro"}, -- Shard of Azzinoth
+  [32471] = {boss = 609, slot = 13, xtype =  5, account = 6, cost = 400, note = "BiS: Ro"}, -- Shard of Azzinoth
   [32483] = {boss = 609, slot = 12, xtype =  0, account = 6, cost = 500, note = "BiS: RDr Arcane Fire RPr RSh Affli Destro"}, -- The Skull of Gul'dan
   [32496] = {boss = 609, slot = 12, xtype =  0, account = 6, cost = 500, note = "BiS: HDr HPa HSh Opt:"}, -- Memento of Tyrande
   [32497] = {boss = 609, slot = 11, xtype =  0, account = 6, cost = 350, note = "BiS: BM/MM Ro MSh Fury Opt: MDr MPa Arms Prot"}, -- Stormrage Signet Ring
@@ -135,6 +135,8 @@ local items = {
   [32521] = {boss = 609, slot =  1, xtype =  4, account = 6, cost = 300, note = "BiS: TPa Prot"}, -- Faceplate of the Impenetrable
   [32524] = {boss = 609, slot =  4, xtype =  1, account = 6, cost = 350, note = "BiS: RDr HDr HPa Arcane HPr RPr RSh HSh Affli Destro Opt: Fire"}, -- Shroud of the Highborne
   [32525] = {boss = 609, slot =  1, xtype =  1, account = 6, cost = 300, note = "BiS: Fire Opt: Rdr Arcane RPr RSh Affli Destro"}, -- Cowl of the Illidari High Lord
+  [32837] = {boss = 609, slot = 14, xtype =  6, account = 6, cost = 400, note = "BiS: Ro Fury - Highest EP Prio"}, -- Warglaive of Azzinoth
+  [32838] = {boss = 609, slot = 15, xtype =  6, account = 6, cost = 400, note = "BiS: Ro Fury - Highest EP Prio"}, -- Warglaive of Azzinoth
 
   -- Trash:
   [32526] = {boss =   1, slot = 11, xtype =  0, account = 6, cost = 350, note = "BiS: MPa"}, -- Band of Devastation
