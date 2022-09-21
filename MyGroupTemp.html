@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Little Nyx EPGP</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/darkly/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    .ng-cloak { display: none !important }
+    .color-links a, .color-links a:hover, .color-links a:focus { color: #FF9900 !important }
+    .color-epics a, .color-epics a:hover, .color-epics a:focus { color: #A335EE !important }
+  </style>
+</head>
+<body style="font-weight: 100; font-size: 100%">
+<div class="container-fluid ng-cloak" ng-app="app" ng-controller="controller">
+
+  <!-- TITLE -->
+  <br>
+  <h2>Little Nyx EPGP</h2>
+  Last updated on 2022-09-22 01:34
+  <br>
+  <br>
+
+  <!-- ACCOUNT -->
+  <div class="d-sm-none" ng-show="accounts.length > 1">
+    <select class="custom-select" ng-model="account" ng-change="ChangeAccount()">
+      <option ng-repeat="a in accounts" ng-value="a.id">{{ a.name }}</option>
+    </select>
+    <br><br>
+  </div>
+
+  <!-- TABS -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#chars">Chars</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#items">Items</a>
+    </li>
+    <div style="flex:1"></div>
+
+    <!-- ACCOUNT -->
+    <div class="d-none d-sm-block" ng-show="accounts.length > 1">
+      <select class="custom-select" ng-model="account" ng-change="ChangeAccount()">
+        <option style="min-width: 160px" ng-repeat="a in accounts" ng-value="a.id">{{ a.name }}</option>
+      </select>
+    </div>
+
+  </ul>
+  <br>
+
+  <div class="tab-content color-links">
+
+    <!-- /////////////////////////////////////////////////////////////////// -->
+    <!-- // TAB CHARS ////////////////////////////////////////////////////// -->
+    <!-- /////////////////////////////////////////////////////////////////// -->
+
+    <div class="tab-pane active" id="chars">
+
+      <!-- SEARCH -->
+      <div class="input-group">
+        <input class="form-control" type="text" placeholder="Search for Name, Class and/or Role..." ng-model="char.search" ng-change="RefreshCharList()">
+        <div class="input-group-append">
+          <button class="btn btn-secondary" type="button" ng-click="char.search = ''; RefreshCharList()">&#10005;</button>
+         </div>
+      </div>
+      <br>
+
+      <!-- LIST -->
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+
+          <!-- HEADER -->
+          <thead>
+            <tr>
+              <th><a href="javascript:;" ng-click="SortList(char, 'nickname', true)">Name</a></th>
+              <th class="d-none d-sm-table-cell">
+                <a href="javascript:;" ng-click="SortList(char, 'classname', true)">Class</a>
+              </th>
+              <th class="d-none d-sm-table-cell">
+                <a href="javascript:;" ng-click="SortList(char, 'role', true)">Role</a>
+              </th>
+              <th><a href="javascript:;" ng-click="SortList(char, 'kills', false)">Kills</a></th>
+              <th><a href="javascript:;" ng-click="SortList(char, 'items', false)">Items</a></th>
+              <th><a href="javascript:;" ng-click="SortList(char, 'ep', false)">EP</a></th>
+              <th><a href="javascript:;" ng-click="SortList(char, 'gp', false)">GP</a></th>
+              <th><a href="javascript:;" ng-click="SortList(char, 'points', false)">Score</a></th>
+            </tr>
+          </thead>
+
+          <!-- BODY -->
+          <tbody>
+            <tr ng-repeat="x in char.list | orderBy : [char.sort, 'nickname']">
+              <td style="color: {{ x.color }}">{{ x.name }}</td>
+              <td class="d-none d-sm-table-cell" style="color: {{ x.color }}">
+                {{ x.classname }}
+              </td>
+              <td class="d-none d-sm-table-cell">
+                {{ x.role }}
+              </td>
+              <td><a href="javascript:;" ng-click="KillsClick(x.name)">{{ x.kills }}</a></td>
+              <td><a href="javascript:;" ng-click="ItemsClick(x.name)">{{ x.items }}</a></td>
+              <td>{{ x.ep }}</td>
+              <td>{{ x.gp }}</td>
+              <td>{{ x.points }}</td>
+            </tr>
+          </tbody>
+
+          <!-- FOOTER -->
+          <tfoot>
+            <tr>
+              <td>{{ char.total.count }}</td>
+              <td class="d-none d-sm-table-cell"></td>
+              <td class="d-none d-sm-table-cell"></td>
+              <td></td>
+              <td>{{ char.total.items }}</td>
+              <td>{{ char.total.ep }}</td>
+              <td>{{ char.total.gp }}</td>
+              <td>{{ char.total.points }}</td>
+            </tr>
+          </tfoot>
+
+        </table>
+      </div>
+      <br>
+    </div>
+
+    <!-- /////////////////////////////////////////////////////////////////// -->
+    <!-- // TAB ITEMS ////////////////////////////////////////////////////// -->
+    <!-- /////////////////////////////////////////////////////////////////// -->
+
+    <div class="tab-pane" id="items">
+
+      <!-- SEARCH -->
+      <div class="input-group">
+        <input class="form-control" type="text" placeholder="Search for Item, Boss, Type, Slot and/or Class..." ng-model="item.search" ng-change="RefreshItemList()">
+        <div class="input-group-append">
+          <button class="btn btn-secondary" type="button" ng-click="item.search = ''; RefreshItemList()">&#10005;</button>
+         </div>
+      </div>
+      <br>
+
+      <!-- LIST -->
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+
+          <!-- HEADER -->
+          <thead>
+            <tr>
+              <th><a href="javascript:;" ng-click="SortList(item, 'name', true)">Item</a></th>
+              <th><a href="javascript:;" ng-click="SortList(item, 'count', false)">Count</a></th>
+              <th class="d-none d-sm-table-cell">
+                <a href="javascript:;" ng-click="SortList(item, 'bossid', true)">Boss</a>
+              </th>
+              <th class="d-none d-lg-table-cell">
+                <a href="javascript:;" ng-click="SortList(item, 'xtype', true)">Type</a>
+              </th>
+              <th class="d-none d-lg-table-cell">
+                <a href="javascript:;" ng-click="SortList(item, 'slot', true)">Slot</a>
+              </th>
+              <th class="d-none d-lg-table-cell">
+                <a href="javascript:;" ng-click="SortList(item, 'xclass', true)">Class</a>
+              </th>
+              <th><a href="javascript:;" ng-click="SortList(item, 'cost', false)">Cost</a></th>
+              <th class="d-none d-md-table-cell">
+                Note
+              </th>
+            </tr>
+          </thead>
+
+          <!-- BODY -->
+          <tbody>
+            <tr ng-repeat="x in item.list | orderBy : [item.sort, 'name']">
+              <td class="color-epics">
+                <a href="https://{{ host }}/item={{ x.id }}" target="_blank">{{ x.name }}</a>
+              </td>
+              <td><a href="javascript:;" ng-click="PlayersClick(x.id)">{{ x.count }}</a></td>
+              <td class="d-none d-sm-table-cell">
+                {{ x.boss }}
+              </td>
+              <td class="d-none d-lg-table-cell">
+                {{ x.xtype }}
+              </td>
+              <td class="d-none d-lg-table-cell">
+                {{ x.slot }}
+              </td>
+              <td class="d-none d-lg-table-cell">
+                {{ x.xclass }}
+              </td>
+              <td>{{ x.cost }}</td>
+              <td class="d-none d-md-table-cell">
+                {{ x.note }}
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+      <br>
+    </div>
+
+  </div>
+
+  <!-- ///////////////////////////////////////////////////////////////////// -->
+  <!-- // POPUPS /////////////////////////////////////////////////////////// -->
+  <!-- ///////////////////////////////////////////////////////////////////// -->
+
+  <!-- KILLS -->
+  <div class="modal popup" id="kills_popup">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+
+        <div class="modal-body">
+          <button type="button" class="close" style="margin-top: -4px" data-dismiss="modal">&times;</button>
+
+          &nbsp;{{ char.stats.name }} Kills:
+          <table class="table table-sm">
+            <tr ng-repeat="x in char.stats.kills | orderBy : '-timestamp'">
+              <td>{{ x.timestamp }} - {{ x.bossname }}</td><td style="text-align: right">{{ x.points }}</td>
+            </tr>
+            <tr>
+              <td>TOTAL</td><td style="width: 80px; text-align: right">{{ char.stats.ktot1 }}</td>
+            </tr>
+          </table>
+          <div ng-if="char.stats.kcorr.length > 0">
+            &nbsp;{{ char.stats.name }} Corrections:
+            <table class="table table-sm">
+              <tr ng-repeat="x in char.stats.kcorr | orderBy : '-timestamp'">
+                <td>{{ x.timestamp }} - {{ x.reason }}</td><td style="text-align: right">{{ x.ep }}</td>
+              </tr>
+              <tr>
+                <td>TOTAL</td><td style="width: 80px; text-align: right">{{ char.stats.ktot2 }}</td>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEMS -->
+  <div class="modal popup" id="items_popup">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+
+        <div class="modal-body">
+          <button type="button" class="close" style="margin-top: -4px" data-dismiss="modal">&times;</button>
+
+          &nbsp;{{ char.stats.name }} Items:
+          <table class="table table-sm color-epics">
+            <tr ng-repeat="x in char.stats.items | orderBy : '-timestamp'">
+              <td>{{ x.timestamp }} - <a href="https://{{ host }}/item={{ x.itemid }}" target="_blank">{{ x.itemname }}</a></td><td style="text-align: right">{{ x.itemcost }}</td>
+            </tr>
+            <tr>
+              <td>TOTAL excl. BaseGP</td><td style="width: 80px; text-align: right">{{ char.stats.itot1 }}</td>
+            </tr>
+          </table>
+          <div ng-if="char.stats.icorr.length > 0">
+            &nbsp;{{ char.stats.name }} Corrections:
+            <table class="table table-sm">
+              <tr ng-repeat="x in char.stats.icorr | orderBy : '-timestamp'">
+                <td>{{ x.timestamp }} - {{ x.reason }}</td><td style="text-align: right">{{ x.gp }}</td>
+              </tr>
+              <tr>
+                <td>TOTAL</td><td style="width: 80px; text-align: right">{{ char.stats.itot2 }}</td>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYERS -->
+  <div class="modal popup" id="players_popup">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+
+        <div class="modal-body">
+          <button type="button" class="close" style="margin-top: -4px" data-dismiss="modal">&times;</button>
+          {{ item.stats.name }}:
+          <ul>
+            <li ng-repeat="x in item.stats.players | orderBy : '-timestamp'">{{ x.timestamp }} - {{ x.name }}</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ///////////////////////////////////////////////////////////////////// -->
+  <!-- ///////////////////////////////////////////////////////////////////// -->
+  <!-- ///////////////////////////////////////////////////////////////////// -->
+
+  <!-- SCRIPT -->
+  <script>
+    var app = angular.module("app", []);
+    app.controller("controller", function($scope) {
+
+      $scope.data =
+
+// BEGIN IMPORTED DATA ///////////////////////////////////////////
+{
+"Raids" : [], 
+"Roster" : {"Mygrain" : {"nickname" : "Mygrain", "role" : 3, "xclass" : 2}, "Imbalgin" : {"nickname" : "Imbalgin", "role" : 4, "xclass" : 4}, "Soggypants" : {"nickname" : "Soggypants", "role" : 3, "xclass" : 2}, "Krepe" : {"nickname" : "Krepe", "role" : 3, "xclass" : 1}, "Likkle" : {"nickname" : "Likkle", "role" : 3, "xclass" : 8}, "Dremdra" : {"nickname" : "Dremdra", "role" : 2, "xclass" : 6}, "Codzerra" : {"nickname" : "Codzerra", "role" : 3, "xclass" : 8}, "Lamishra" : {"nickname" : "Lamishra", "role" : 3, "xclass" : 7}, "Smellypaly" : {"nickname" : "Smellypaly", "role" : 4, "xclass" : 4}, "Bággen" : {"nickname" : "Bággen", "role" : 2, "xclass" : 6}, "Ejectoseato" : {"nickname" : "Ejectoseato", "role" : 2, "xclass" : 9}, "Laniakaia" : {"nickname" : "Laniakaia", "role" : 3, "xclass" : 8}, "Doomhart" : {"nickname" : "Doomhart", "role" : 4, "xclass" : 4}, "Nitugardy" : {"nickname" : "Nitugardy", "role" : 3, "xclass" : 3}, "Gryts" : {"nickname" : "Gryts", "role" : 3, "xclass" : 1}, "Fêar" : {"nickname" : "Fear", "role" : 3, "xclass" : 8}, "Malgeth" : {"nickname" : "Malgeth", "role" : 3, "xclass" : 8}, "Battman" : {"nickname" : "Battman", "role" : 3, "xclass" : 3}, "Imórtal" : {"nickname" : "Imortal", "role" : 1, "xclass" : 4}, "Palypoes" : {"nickname" : "Palypoes", "role" : 2, "xclass" : 4}, "Anareon" : {"nickname" : "Anareon", "role" : 2, "xclass" : 4}, "Baeleef" : {"nickname" : "Baeleef", "role" : 4, "xclass" : 1}, "Mythria" : {"nickname" : "Mythria", "role" : 3, "xclass" : 2}, "Leywen" : {"nickname" : "Leywen", "role" : 4, "xclass" : 4}, "Jwarrior" : {"nickname" : "Jwarrior", "role" : 2, "xclass" : 9}, "Nattlys" : {"nickname" : "Nattlys", "role" : 4, "xclass" : 5}, "Ksiadzropak" : {"nickname" : "Ksiadzropak", "role" : 4, "xclass" : 5}, "Breadshadow" : {"nickname" : "Breadshadow", "role" : 2, "xclass" : 1}, "Ládyhawke" : {"nickname" : "Ládyhawke", "role" : 4, "xclass" : 5}, "Barawi" : {"nickname" : "Barawi", "role" : 2, "xclass" : 1}, "Knockmeup" : {"nickname" : "Knockmeup", "role" : 4, "xclass" : 1}, "Sebcioch" : {"nickname" : "Sebcioch", "role" : 4, "xclass" : 1}, "Volrik" : {"nickname" : "Volrik", "role" : 3, "xclass" : 3}, "Shacaca" : {"nickname" : "Shacaca", "role" : 2, "xclass" : 7}, "Combatcoco" : {"nickname" : "Combatcoco", "role" : 2, "xclass" : 6}, "Caberyreason" : {"nickname" : "Caberyreason", "role" : 3, "xclass" : 1}, "Saffyr" : {"nickname" : "Saffyr", "role" : 2, "xclass" : 9}, "Räkpaj" : {"nickname" : "Räkpaj", "role" : 4, "xclass" : 7}, "Hazeroth" : {"nickname" : "Hazeroth", "role" : 1, "xclass" : 9}, "Shovana" : {"nickname" : "Shovana", "role" : 3, "xclass" : 3}, "Dexla" : {"nickname" : "Dexla", "role" : 2, "xclass" : 6}, "Freÿ" : {"nickname" : "Freÿ", "role" : 3, "xclass" : 5}, "Opaq" : {"nickname" : "Opaq", "role" : 2, "xclass" : 1}, "Lalapeja" : {"nickname" : "Lalapeja", "role" : 1, "xclass" : 4}, "Greyarrows" : {"nickname" : "Greyarrows", "role" : 3, "xclass" : 2}, "Bagts" : {"nickname" : "Bagts", "role" : 3, "xclass" : 3}, "Jeani" : {"nickname" : "Jeani", "role" : 4, "xclass" : 5}, "Iater" : {"nickname" : "Iater", "role" : 4, "xclass" : 1}, "Aaliyah" : {"nickname" : "Aaliyah", "role" : 4, "xclass" : 4}, "Palba" : {"nickname" : "Palba", "role" : 4, "xclass" : 5}, "Pillunsyöjä" : {"nickname" : "Pillunsyoja", "role" : 2, "xclass" : 9}, "Sint" : {"nickname" : "Sint", "role" : 3, "xclass" : 5}, "Psketti" : {"nickname" : "Psketti", "role" : 3, "xclass" : 8}, "Avellin" : {"nickname" : "Avellin", "role" : 2, "xclass" : 4}, "Pnda" : {"nickname" : "Pnda", "role" : 2, "xclass" : 9}, "Moelven" : {"nickname" : "Moelven", "role" : 3, "xclass" : 2}, "Brenton" : {"nickname" : "Brenton", "role" : 3, "xclass" : 8}, "Dhaze" : {"nickname" : "Dhaze", "role" : 2, "xclass" : 1}, "Airness" : {"nickname" : "Airness", "role" : 3, "xclass" : 5}, "Flexyjade" : {"nickname" : "Flexyjade", "role" : 3, "xclass" : 8}, "Calibow" : {"nickname" : "Calibow", "role" : 3, "xclass" : 2}, "Gavun" : {"nickname" : "Gavun", "role" : 2, "xclass" : 6}, "Bispriest" : {"nickname" : "Bispriest", "role" : 4, "xclass" : 5}, "Maclourion" : {"nickname" : "Maclourion", "role" : 3, "xclass" : 3}, "Stèphaniè" : {"nickname" : "Stèphaniè", "role" : 4, "xclass" : 1}, "Nexensis" : {"nickname" : "Nexensis", "role" : 2, "xclass" : 6}, "Eragoniz" : {"nickname" : "Eragoniz", "role" : 2, "xclass" : 6}, "Zabishii" : {"nickname" : "Zabishii", "role" : 4, "xclass" : 7}, "Shocktherapy" : {"nickname" : "Shocktherapy", "role" : 3, "xclass" : 7}, "Ethiel" : {"nickname" : "Ethiel", "role" : 4, "xclass" : 1}, "Hakos" : {"nickname" : "Hakos", "role" : 2, "xclass" : 7}, "Fauxxy" : {"nickname" : "Fauxxy", "role" : 3, "xclass" : 1}, "Vendictus" : {"nickname" : "Vendictus", "role" : 3, "xclass" : 5}, "Izac" : {"nickname" : "Izac", "role" : 1, "xclass" : 4}, "Tikkah" : {"nickname" : "Tikkah", "role" : 3, "xclass" : 8}, "Bisprist" : {"nickname" : "Bisprist", "role" : 4, "xclass" : 5}, "Furtwentea" : {"nickname" : "Furtwentea", "role" : 4, "xclass" : 1}, "Saray" : {"nickname" : "Saray", "role" : 3, "xclass" : 3}, "Rhagnor" : {"nickname" : "Rhagnor", "role" : 3, "xclass" : 2}, "Paynz" : {"nickname" : "Paynz", "role" : 4, "xclass" : 4}, "Eggnbacon" : {"nickname" : "Eggnbacon", "role" : 3, "xclass" : 3}, "Yimza" : {"nickname" : "Yimza", "role" : 4, "xclass" : 7}, "Zyxell" : {"nickname" : "Zyxell", "role" : 2, "xclass" : 6}, "Eclipce" : {"nickname" : "Eclipce", "role" : 4, "xclass" : 5}, "Daffke" : {"nickname" : "Daffke", "role" : 2, "xclass" : 6}, "Onionring" : {"nickname" : "Onionring", "role" : 3, "xclass" : 3}, "Bobiko" : {"nickname" : "Bobiko", "role" : 4, "xclass" : 1}, "Jbelle" : {"nickname" : "Jbelle", "role" : 3, "xclass" : 2}, "Morpeeus" : {"nickname" : "Morpeeus", "role" : 4, "xclass" : 1}, "Kialya" : {"nickname" : "Kialya", "role" : 3, "xclass" : 3}, "Vrilya" : {"nickname" : "Vrilya", "role" : 1, "xclass" : 9}, "Stolnikova" : {"nickname" : "Stolnikova", "role" : 2, "xclass" : 7}, "Frostartist" : {"nickname" : "Frostartist", "role" : 3, "xclass" : 3}, "Poppetje" : {"nickname" : "Poppetje", "role" : 1, "xclass" : 4}, "Misandri" : {"nickname" : "Misandri", "role" : 3, "xclass" : 1}, "Luandra" : {"nickname" : "Luandra", "role" : 3, "xclass" : 1}, "Animelove" : {"nickname" : "Animelove", "role" : 1, "xclass" : 4}, "Locktorius" : {"nickname" : "Locktorius", "role" : 3, "xclass" : 8}, "Philthewise" : {"nickname" : "Philthewise", "role" : 3, "xclass" : 3}, "Astorah" : {"nickname" : "Astorah", "role" : 4, "xclass" : 7}, "Tidanbo" : {"nickname" : "Tidanbo", "role" : 2, "xclass" : 9}, "Husqie" : {"nickname" : "Husqie", "role" : 3, "xclass" : 2}, "Shushi" : {"nickname" : "Shushi", "role" : 4, "xclass" : 5}, "Hánna" : {"nickname" : "Hánna", "role" : 4, "xclass" : 4}, "Wampiix" : {"nickname" : "Wampiix", "role" : 4, "xclass" : 5}, "Matoo" : {"nickname" : "Matoo", "role" : 3, "xclass" : 3}, "Totemaizer" : {"nickname" : "Totemaizer", "role" : 3, "xclass" : 7}, "Dracio" : {"nickname" : "Dracio", "role" : 3, "xclass" : 2}, "Inm" : {"nickname" : "Inm", "role" : 2, "xclass" : 9}, "Lethander" : {"nickname" : "Lethander", "role" : 2, "xclass" : 4}, "Ælizabeth" : {"nickname" : "Aelizabeth", "role" : 3, "xclass" : 8}, "Orama" : {"nickname" : "Orama", "role" : 3, "xclass" : 2}, "Carebeared" : {"nickname" : "Carebeared", "role" : 2, "xclass" : 1}}, 
+"Slots" : {"0" : "?", "2" : {"en" : "Neck", "de" : "Hals"}, "4" : {"en" : "Back", "de" : "Rücken"}, "8" : {"en" : "Waist", "de" : "Taille"}, "16" : {"en" : "Two-Hand", "de" : "Zweihändig"}, "17" : {"en" : "Ranged", "de" : "Distanz"}, "9" : {"en" : "Legs", "de" : "Beine"}, "5" : {"en" : "Chest", "de" : "Brust"}, "10" : {"en" : "Feet", "de" : "Füsse"}, "11" : {"en" : "Finger"}, "3" : {"en" : "Shoulder", "de" : "Schulter"}, "6" : {"en" : "Wrist", "de" : "Handgelenke"}, "12" : {"en" : "Trinket", "de" : "Schmuck"}, "13" : {"en" : "One-Hand", "de" : "Einhändig"}, "7" : {"en" : "Hands", "de" : "Hände"}, "14" : {"en" : "Main Hand", "de" : "Waffenhand"}, "15" : {"en" : "Off Hand", "de" : "Schildhand"}, "1" : {"en" : "Head", "de" : "Kopf"}}, 
+"Roles" : {"0" : "?", "2" : {"en" : "Melee"}, "3" : {"en" : "Ranged"}, "1" : {"en" : "Tank"}, "4" : {"en" : "Heal", "de" : "Heiler"}}, 
+"Items" : {"40431" : {"boss" : 1616, "name" : "Fury of the Five Flights", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40543" : {"boss" : 1617, "name" : "Blue Aspect Helm", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40064" : {"boss" : 1601, "name" : "Thunderstorm Amulet", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40591" : {"boss" : 1617, "name" : "Melancholy Sabatons", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40639" : {"boss" : 1606, "name" : "Mantle of the Lost Vanquisher", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40192" : {"boss" : 1604, "name" : "Accursed Spine", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40208" : {"boss" : 1605, "name" : "Cryptfiend's Bite", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 9, "account" : 1}, "40240" : {"boss" : 1606, "name" : "Greaves of Turbulence", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40256" : {"boss" : 1603, "name" : "Grim Toll", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40272" : {"boss" : 1610, "name" : "Girdle of the Gambit", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40288" : {"boss" : 1611, "name" : "Spaulders of Incoherence", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40304" : {"boss" : 1613, "name" : "Headpiece of Fungal Bloom", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40320" : {"boss" : 1607, "name" : "Faithful Steel Sabatons", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40336" : {"boss" : 1608, "name" : "Life and Death", "slot" : 14, "note" : " ", "cost" : 0, "xtype" : 6, "account" : 1}, "40352" : {"boss" : 1609, "name" : "Leggings of Voracious Shadows", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40368" : {"boss" : 1614, "name" : "Murder", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 5, "account" : 1}, "40384" : {"boss" : 1615, "name" : "Betrayer of Humanity", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 7, "account" : 1}, "40400" : {"boss" : 1615, "name" : "Wall of Terror", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 17, "account" : 1}, "40432" : {"boss" : 1616, "name" : "Illustration of the Dragon Soul", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40560" : {"boss" : 1617, "name" : "Leggings of the Wanton Spellcaster", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40065" : {"boss" : 1601, "name" : "Fool's Trial", "slot" : 2, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40592" : {"boss" : 1617, "name" : "Boots of Healing Energies", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40193" : {"boss" : 1604, "name" : "Tunic of Masked Suffering", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40209" : {"boss" : 1605, "name" : "Bindings of the Decrepit", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "39730" : {"boss" : 1602, "name" : "Widow's Fury", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 6, "account" : 1}, "40257" : {"boss" : 1603, "name" : "Defender's Code", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40273" : {"boss" : 1610, "name" : "Surplus Limb", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40289" : {"boss" : 1611, "name" : "Sympathetic Amice", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40305" : {"boss" : 1607, "name" : "Spaulders of Egotism", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40321" : {"boss" : 1607, "name" : "Idol of the Shooting Star", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40337" : {"boss" : 1608, "name" : "Libram of Resurgence", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40369" : {"boss" : 1614, "name" : "Icy Blast Amulet", "slot" : 2, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40385" : {"boss" : 1615, "name" : "Envoy of Mortality", "slot" : 17, "note" : " ", "cost" : 0, "xtype" : 14, "account" : 1}, "40401" : {"boss" : 1615, "name" : "Voice of Reason", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 17, "account" : 1}, "40433" : {"boss" : 1616, "name" : "Wyrmrest Band", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40561" : {"boss" : 1617, "name" : "Leash of Heedless Magic", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40625" : {"boss" : 1609, "name" : "Breastplate of the Lost Conqueror", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40194" : {"boss" : 1617, "name" : "Blanketing Robes of Snow", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40210" : {"boss" : 1605, "name" : "Chestguard of Bitter Charms", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "39731" : {"boss" : 1602, "name" : "Punctilious Bindings", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40258" : {"boss" : 1603, "name" : "Forethought Talisman", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40274" : {"boss" : 1611, "name" : "Bracers of Liberation", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40306" : {"boss" : 1607, "name" : "Bracers of the Unholy Knight", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40322" : {"boss" : 1607, "name" : "Totem of Dueling", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40338" : {"boss" : 1608, "name" : "Bindings of Yearning", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40370" : {"boss" : 1614, "name" : "Gatekeeper", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40386" : {"boss" : 1615, "name" : "Sinister Revenge", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 5, "account" : 1}, "40402" : {"boss" : 1615, "name" : "Last Laugh", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 7, "account" : 1}, "44011" : {"boss" : 1616, "name" : "Leggings of the Honored", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40562" : {"boss" : 1617, "name" : "Hood of Rationality", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40594" : {"boss" : 1617, "name" : "Spaulders of Catatonia", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40626" : {"boss" : 1609, "name" : "Breastplate of the Lost Protector", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "39716" : {"boss" : 1601, "name" : "Shield of Assimilation", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 17, "account" : 1}, "40243" : {"boss" : 1606, "name" : "Footwraps of Vile Deceit", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40259" : {"boss" : 1610, "name" : "Waistguard of Divine Grace", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40275" : {"boss" : 1611, "name" : "Depraved Linked Belt", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40323" : {"boss" : 1607, "name" : "Esteemed Bindings", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40339" : {"boss" : 1608, "name" : "Gothik's Cowl", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40371" : {"boss" : 1614, "name" : "Bandit's Insignia", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40387" : {"boss" : 1615, "name" : "Boundless Ambition", "slot" : 2, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40403" : {"boss" : 1615, "name" : "Drape of the Deadly Foe", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40451" : {"boss" : 1616, "name" : "Hyaline Helm of the Sniper", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40531" : {"boss" : 1617, "name" : "Mark of Norgannon", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40627" : {"boss" : 1609, "name" : "Breastplate of the Lost Vanquisher", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40196" : {"boss" : 1604, "name" : "Legguards of the Undisturbed", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "39701" : {"boss" : 1601, "name" : "Dawnwalkers", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "39717" : {"boss" : 1601, "name" : "Inexorable Sabatons", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40244" : {"boss" : 1606, "name" : "The Impossible Dream", "slot" : 14, "note" : " ", "cost" : 0, "xtype" : 8, "account" : 1}, "40260" : {"boss" : 1610, "name" : "Belt of the Tortured", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "39765" : {"boss" : 1603, "name" : "Sinner's Bindings", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40324" : {"boss" : 1607, "name" : "Bands of Mutual Respect", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40340" : {"boss" : 1608, "name" : "Helm of Unleashed Energy", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40372" : {"boss" : 1614, "name" : "Rune of Repulsion", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40388" : {"boss" : 1615, "name" : "Journey's End", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 10, "account" : 1}, "40532" : {"boss" : 1617, "name" : "Living Ice Crystals", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40564" : {"boss" : 1617, "name" : "Winter Spectacle Gloves", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40069" : {"boss" : 1601, "name" : "Heritage", "slot" : 2, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40628" : {"boss" : 1616, "name" : "Gauntlets of the Lost Conqueror", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40197" : {"boss" : 1604, "name" : "Gloves of the Fallen Wizard", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "39702" : {"boss" : 1601, "name" : "Arachnoid Gold Band", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40245" : {"boss" : 1606, "name" : "Fading Glow", "slot" : 17, "note" : " ", "cost" : 0, "xtype" : 15, "account" : 1}, "40261" : {"boss" : 1610, "name" : "Crude Discolored Battlegrips", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40277" : {"boss" : 1611, "name" : "Tunic of Indulgence", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40325" : {"boss" : 1607, "name" : "Bindings of the Expansive Mind", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40341" : {"boss" : 1608, "name" : "Shackled Cinch", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40373" : {"boss" : 1614, "name" : "Extract of Necromantic Power", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40405" : {"boss" : 1615, "name" : "Cape of the Unworthy Wizard", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40437" : {"boss" : 1616, "name" : "Concealment Shoulderpads", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40453" : {"boss" : 1616, "name" : "Chestplate of the Great Aspects", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40549" : {"boss" : 1617, "name" : "Boots of the Renewed Flight", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40629" : {"boss" : 1616, "name" : "Gauntlets of the Lost Protector", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40198" : {"boss" : 1604, "name" : "Bands of Impurity", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "39719" : {"boss" : 1601, "name" : "Mantle of the Locusts", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40246" : {"boss" : 1606, "name" : "Boots of Impetuous Ideals", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40262" : {"boss" : 1610, "name" : "Gloves of Calculated Risk", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "39767" : {"boss" : 1603, "name" : "Undiminished Battleplate", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40294" : {"boss" : 1613, "name" : "Riveted Abomination Leggings", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40326" : {"boss" : 1607, "name" : "Boots of Forlorn Wishes", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40342" : {"boss" : 1608, "name" : "Idol of Awakening", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40374" : {"boss" : 1614, "name" : "Cosmic Lights", "slot" : 2, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40406" : {"boss" : 1612, "name" : "Inevitable Defeat", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 8, "account" : 1}, "40438" : {"boss" : 1616, "name" : "Council Chamber Epaulets", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40566" : {"boss" : 1617, "name" : "Unravelling Strands of Sanity", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40071" : {"boss" : 1601, "name" : "Chains of Adoration", "slot" : 2, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40630" : {"boss" : 1616, "name" : "Gauntlets of the Lost Vanquisher", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "39704" : {"boss" : 1601, "name" : "Pauldrons of Unnatural Death", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 5, "account" : 1}, "39720" : {"boss" : 1601, "name" : "Leggings of Atrophy", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40247" : {"boss" : 1606, "name" : "Cowl of Innocent Delight", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40263" : {"boss" : 1610, "name" : "Fleshless Girdle", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40279" : {"boss" : 1611, "name" : "Chestguard of the Exhausted", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40327" : {"boss" : 1607, "name" : "Girdle of Recuperation", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40343" : {"boss" : 1609, "name" : "Armageddon", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 6, "account" : 1}, "40375" : {"boss" : 1614, "name" : "Ring of Decaying Beauty", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40407" : {"boss" : 1612, "name" : "Silent Crusader", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 6, "account" : 1}, "44000" : {"boss" : 1616, "name" : "Dragonstorm Breastplate", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40439" : {"boss" : 1616, "name" : "Mantle of the Eternal Sentinel", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40455" : {"boss" : 1616, "name" : "Staff of Restraint", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 10, "account" : 1}, "40631" : {"boss" : 1614, "name" : "Crown of the Lost Conqueror", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40184" : {"boss" : 1604, "name" : "Crippled Treads", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40200" : {"boss" : 1604, "name" : "Belt of Potent Chanting", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "39721" : {"boss" : 1601, "name" : "Sash of the Parlor", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40264" : {"boss" : 1610, "name" : "Split Greathammer", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 8, "account" : 1}, "40280" : {"boss" : 1611, "name" : "Origin of Nightmares", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 10, "account" : 1}, "40296" : {"boss" : 1613, "name" : "Cover of Silence", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40328" : {"boss" : 1608, "name" : "Helm of Vital Protection", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40344" : {"boss" : 1609, "name" : "Helm of the Grave", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40376" : {"boss" : 1614, "name" : "Legwraps of the Defeated Dragon", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40408" : {"boss" : 1612, "name" : "Haunting Call", "slot" : 14, "note" : " ", "cost" : 0, "xtype" : 5, "account" : 1}, "40632" : {"boss" : 1614, "name" : "Crown of the Lost Protector", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40185" : {"boss" : 1604, "name" : "Shoulderguards of Opportunity", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40201" : {"boss" : 1605, "name" : "Leggings of Colossal Strides", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "39706" : {"boss" : 1601, "name" : "Sabatons of Sudden Reprisal", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40233" : {"boss" : 1605, "name" : "The Undeath Carrier", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 10, "account" : 1}, "40249" : {"boss" : 1606, "name" : "Vest of Vitality", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40265" : {"boss" : 1610, "name" : "Arrowsong", "slot" : 17, "note" : " ", "cost" : 0, "xtype" : 12, "account" : 1}, "40281" : {"boss" : 1611, "name" : "Twilight Mist", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 5, "account" : 1}, "40297" : {"boss" : 1613, "name" : "Sabatons of Endurance", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40329" : {"boss" : 1608, "name" : "Hood of the Exodus", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40345" : {"boss" : 1609, "name" : "Broken Promise", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 6, "account" : 1}, "40377" : {"boss" : 1614, "name" : "Noble Birthright Pauldrons", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40409" : {"boss" : 1612, "name" : "Boots of the Escaped Captive", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "44002" : {"boss" : 1616, "name" : "The Sanctum's Flowing Vestments", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "44577" : {"boss" : 1614, "name" : "Heroic Key to the Focusing Iris", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40074" : {"boss" : 1602, "name" : "Strong-Handed Ring", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40633" : {"boss" : 1614, "name" : "Crown of the Lost Vanquisher", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40186" : {"boss" : 1604, "name" : "Thrusting Bands", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "39723" : {"boss" : 1602, "name" : "Fire-Scorched Greathelm", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40250" : {"boss" : 1603, "name" : "Aged Winter Cloak", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40266" : {"boss" : 1610, "name" : "Hero's Surrender", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 17, "account" : 1}, "40282" : {"boss" : 1611, "name" : "Slime Stream Bands", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40298" : {"boss" : 1613, "name" : "Faceguard of the Succumbed", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40330" : {"boss" : 1608, "name" : "Bracers of Unrelenting Attack", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40346" : {"boss" : 1609, "name" : "Final Voyage", "slot" : 17, "note" : " ", "cost" : 0, "xtype" : 13, "account" : 1}, "40362" : {"boss" : 1614, "name" : "Gloves of Fast Reactions", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40378" : {"boss" : 1614, "name" : "Ceaseless Pity", "slot" : 2, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40410" : {"boss" : 1612, "name" : "Shadow of the Ghoul", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "44003" : {"boss" : 1616, "name" : "Upstanding Spaulders", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40075" : {"boss" : 1601, "name" : "Ruthlessness", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40602" : {"boss" : 1604, "name" : "Robes of Mutation", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40107" : {"boss" : 1602, "name" : "Sand-Worn Band", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40634" : {"boss" : 1612, "name" : "Legplates of the Lost Conqueror", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40187" : {"boss" : 1604, "name" : "Poignant Sabatons", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40203" : {"boss" : 1605, "name" : "Breastplate of Tormented Rage", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "39724" : {"boss" : 1602, "name" : "Cult's Chestguard", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40251" : {"boss" : 1603, "name" : "Shroud of Luminosity", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40267" : {"boss" : 1610, "name" : "Totem of Hex", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40283" : {"boss" : 1611, "name" : "Fallout Impervious Tunic", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40299" : {"boss" : 1613, "name" : "Pauldrons of the Abandoned", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40315" : {"boss" : 1607, "name" : "Shoulderpads of Secret Arts", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40331" : {"boss" : 1608, "name" : "Leggings of Failed Escape", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40347" : {"boss" : 1609, "name" : "Zeliek's Gauntlets", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40363" : {"boss" : 1614, "name" : "Bone-Inlaid Legguards", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40379" : {"boss" : 1614, "name" : "Legguards of the Boneyard", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40395" : {"boss" : 1615, "name" : "Torch of Holy Fire", "slot" : 14, "note" : " ", "cost" : 0, "xtype" : 8, "account" : 1}, "44004" : {"boss" : 1616, "name" : "Bountiful Gauntlets", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40539" : {"boss" : 1617, "name" : "Chestguard of the Recluse", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40555" : {"boss" : 1617, "name" : "Mantle of Dissemination", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40060" : {"boss" : 1603, "name" : "Distorted Limbs", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40108" : {"boss" : 1602, "name" : "Seized Beauty", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40635" : {"boss" : 1612, "name" : "Legplates of the Lost Protector", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "40188" : {"boss" : 1604, "name" : "Gauntlets of the Disobedient", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40204" : {"boss" : 1605, "name" : "Legguards of the Apostle", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40236" : {"boss" : 1605, "name" : "Serene Echoes", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40252" : {"boss" : 1603, "name" : "Cloak of the Shadowed Sun", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40268" : {"boss" : 1610, "name" : "Libram of Tolerance", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40284" : {"boss" : 1611, "name" : "Plague Igniter", "slot" : 17, "note" : " ", "cost" : 0, "xtype" : 15, "account" : 1}, "40300" : {"boss" : 1613, "name" : "Spire of Sunset", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 10, "account" : 1}, "40316" : {"boss" : 1607, "name" : "Gauntlets of Guiding Touch", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40332" : {"boss" : 1608, "name" : "Abetment Bracers", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40348" : {"boss" : 1609, "name" : "Damnation", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 10, "account" : 1}, "40380" : {"boss" : 1614, "name" : "Gloves of Grandeur", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40396" : {"boss" : 1615, "name" : "The Turning Tide", "slot" : 14, "note" : " ", "cost" : 0, "xtype" : 6, "account" : 1}, "40412" : {"boss" : 1612, "name" : "Ousted Bead Necklace", "slot" : 2, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "44005" : {"boss" : 1616, "name" : "Pennant Cloak", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40061" : {"boss" : 1603, "name" : "Quivering Tunic", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40588" : {"boss" : 1617, "name" : "Tunic of the Artifact Guardian", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40636" : {"boss" : 1612, "name" : "Legplates of the Lost Vanquisher", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "44008" : {"boss" : 1616, "name" : "Unsullied Cuffs", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "39734" : {"boss" : 1602, "name" : "Atonement Greaves", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "43346" : {"boss" : 1616, "name" : "Large Satchel of Spoils", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40189" : {"boss" : 1604, "name" : "Angry Dread", "slot" : 13, "note" : " ", "cost" : 0, "xtype" : 8, "account" : 1}, "40205" : {"boss" : 1605, "name" : "Stalk-Skin Belt", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "43345" : {"boss" : 1616, "name" : "Dragon Hide Bag", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "39726" : {"boss" : 1602, "name" : "Callous-Hearted Gauntlets", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40253" : {"boss" : 1603, "name" : "Shawl of the Old Maid", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40269" : {"boss" : 1610, "name" : "Boots of Persuasion", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40285" : {"boss" : 1611, "name" : "Desecrated Past", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40301" : {"boss" : 1613, "name" : "Cincture of Polarity", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40317" : {"boss" : 1607, "name" : "Girdle of Razuvious", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40333" : {"boss" : 1608, "name" : "Leggings of Fleeting Moments", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40349" : {"boss" : 1609, "name" : "Gloves of Peaceful Death", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40365" : {"boss" : 1614, "name" : "Breastplate of Frozen Pain", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40381" : {"boss" : 1614, "name" : "Sympathy", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "43954" : {"boss" : 1616, "name" : "Reins of the Twilight Drake", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "39758" : {"boss" : 1603, "name" : "The Jawbone", "slot" : 16, "note" : " ", "cost" : 0, "xtype" : 8, "account" : 1}, "44006" : {"boss" : 1616, "name" : "Obsidian Greathelm", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40237" : {"boss" : 1605, "name" : "Eruption-Scarred Boots", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40235" : {"boss" : 1605, "name" : "Helm of Pilgrimage", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40234" : {"boss" : 1605, "name" : "Heigan's Putrid Vestments", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "39732" : {"boss" : 1602, "name" : "Faerlina's Madness", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "39756" : {"boss" : 1602, "name" : "Tunic of Prejudice", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "39764" : {"boss" : 1603, "name" : "Bindings of the Hapless Prey", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40541" : {"boss" : 1617, "name" : "Frosted Adroit Handguards", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40238" : {"boss" : 1605, "name" : "Gloves of the Dancing Bear", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40062" : {"boss" : 1603, "name" : "Digested Silken Robes", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40589" : {"boss" : 1617, "name" : "Legplates of Sovereignty", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40241" : {"boss" : 1606, "name" : "Girdle of Unity", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "39725" : {"boss" : 1602, "name" : "Epaulets of the Grieving Servant", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40637" : {"boss" : 1606, "name" : "Mantle of the Lost Conqueror", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "39733" : {"boss" : 1602, "name" : "Gloves of Token Respect", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "39757" : {"boss" : 1602, "name" : "Idol of Worship", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "43952" : {"boss" : 1617, "name" : "Reins of the Azure Drake", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40190" : {"boss" : 1604, "name" : "Spinning Fate", "slot" : 17, "note" : " ", "cost" : 0, "xtype" : 16, "account" : 1}, "40206" : {"boss" : 1605, "name" : "Iron-Spring Jumpers", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "39763" : {"boss" : 1603, "name" : "Wraith Strike", "slot" : 14, "note" : " ", "cost" : 0, "xtype" : 11, "account" : 1}, "39727" : {"boss" : 1602, "name" : "Dislocating Handguards", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40254" : {"boss" : 1603, "name" : "Cloak of Averted Crisis", "slot" : 4, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40270" : {"boss" : 1610, "name" : "Boots of Septic Wounds", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40286" : {"boss" : 1609, "name" : "Mantle of the Corrupted", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40302" : {"boss" : 1613, "name" : "Benefactor's Gauntlets", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40318" : {"boss" : 1607, "name" : "Legplates of Double Strikes", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40334" : {"boss" : 1608, "name" : "Burdened Shoulderplates", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40350" : {"boss" : 1609, "name" : "Urn of Lost Memories", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40366" : {"boss" : 1614, "name" : "Platehelm of the Great Wyrm", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40382" : {"boss" : 1614, "name" : "Soul of the Dead", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40398" : {"boss" : 1615, "name" : "Leggings of Mortal Arrogance", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40414" : {"boss" : 1612, "name" : "Shoulderguards of the Undaunted", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "44007" : {"boss" : 1616, "name" : "Headpiece of Reconciliation", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40446" : {"boss" : 1616, "name" : "Dragon Brood Legguards", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "39766" : {"boss" : 1603, "name" : "Matriarch's Spawn", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40239" : {"boss" : 1606, "name" : "The Hand of Nerub", "slot" : 15, "note" : " ", "cost" : 0, "xtype" : 11, "account" : 1}, "39762" : {"boss" : 1603, "name" : "Torn Web Wrapping", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "39735" : {"boss" : 1602, "name" : "Belt of False Dignity", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "39759" : {"boss" : 1603, "name" : "Ablative Chitin Girdle", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "39729" : {"boss" : 1602, "name" : "Bracers of the Tyrant", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40558" : {"boss" : 1617, "name" : "Arcanic Tramplers", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40063" : {"boss" : 1603, "name" : "Mantle of Shattered Kinship", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40590" : {"boss" : 1617, "name" : "Elevated Lair Pauldrons", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40278" : {"boss" : 1611, "name" : "Girdle of Chivalry", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "40080" : {"boss" : 1601, "name" : "Lost Jewel", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40638" : {"boss" : 1606, "name" : "Mantle of the Lost Protector", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 18, "account" : 1}, "39760" : {"boss" : 1603, "name" : "Helm of Diminished Pride", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 4, "account" : 1}, "39768" : {"boss" : 1603, "name" : "Cowl of the Perished", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "39761" : {"boss" : 1603, "name" : "Infectious Skitterer Leggings", "slot" : 9, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40191" : {"boss" : 1604, "name" : "Libram of Radiance", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40207" : {"boss" : 1605, "name" : "Sigil of Awareness", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "39712" : {"boss" : 1601, "name" : "Gemmed Wand of the Nerubians", "slot" : 17, "note" : " ", "cost" : 0, "xtype" : 15, "account" : 1}, "39728" : {"boss" : 1602, "name" : "Totem of Misery", "slot" : 0, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40255" : {"boss" : 1603, "name" : "Dying Curse", "slot" : 12, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "40271" : {"boss" : 1610, "name" : "Sash of Solitude", "slot" : 8, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40287" : {"boss" : 1611, "name" : "Cowl of Vanity", "slot" : 1, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40303" : {"boss" : 1613, "name" : "Wraps of the Persecuted", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40319" : {"boss" : 1607, "name" : "Chestpiece of Suspicion", "slot" : 5, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40335" : {"boss" : 1608, "name" : "Touch of Horror", "slot" : 17, "note" : " ", "cost" : 0, "xtype" : 15, "account" : 1}, "40351" : {"boss" : 1611, "name" : "Mantle of the Fatigued Sage", "slot" : 3, "note" : " ", "cost" : 0, "xtype" : 1, "account" : 1}, "40367" : {"boss" : 1614, "name" : "Boots of the Great Construct", "slot" : 10, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}, "40383" : {"boss" : 1615, "name" : "Calamity's Grasp", "slot" : 14, "note" : " ", "cost" : 0, "xtype" : 11, "account" : 1}, "40399" : {"boss" : 1615, "name" : "Signet of Manifested Pain", "slot" : 11, "note" : " ", "cost" : 0, "xtype" : 0, "account" : 1}, "39722" : {"boss" : 1601, "name" : "Swarm Bindings", "slot" : 6, "note" : " ", "cost" : 0, "xtype" : 2, "account" : 1}, "40242" : {"boss" : 1606, "name" : "Grotesque Handgrips", "slot" : 7, "note" : " ", "cost" : 0, "xtype" : 3, "account" : 1}}, 
+"Inactive" : ["Nattlys", "Ðizzy", "Youisyou", "Starscreåm", "Ohgodfleas", "Carebeared", "Caberyreason", "Handygoi", "Noaki", "Füryseth", "Bandobiitch", "Jvd", "Agraynal", "Asdrexiar", "Omegazero", "Zenkaipowaah", "Opaq", "Bopbop", "Farisha", "Fugee", "Leafs", "Msyu", "Shíryo", "Siwex", "Mållgan", "Ninakraviz", "Rolce", "Gassygirl", "Bamsehop", "Lung", "Pietmondrian", "Smolpala", "Battman", "Totemaizer", "Sushaman", "Centaurea", "Niteeloser", "Imórtal", "Wampiix", "Smellypaly", "Matoo", "Daffke", "Lunalea", "Nzothina", "Amadena", "Andiet", "Fåt", "Lithaele", "Livere", "Nüwa", "Redyo", "Shadowspan", "Skyfeather", "Sotella", "Strazda", "Hopelêss", "Kaptenpoke", "Liying", "Trixti", "Trylletrine", "Aramys", "Hårig", "Katlay", "Hobermallow", "Monkyman", "Omeletta", "Slackotolij", "Theonedp", "Zofija", "Mystas", "Lilltossen", "Stygging", "Eggnbacon", "Dexla", "Lalapeja", "Punainen", "Thdarkone", "Finkleblitz", "Pillunsyöjä", "Ládyhawke", "Shovana", "Senzubean", "Galactûs", "Spoinky", "Madhaus", "Dragònhunter", "Coxie", "Grimassi", "Ràgè", "Terrorciccio", "Wigzz", "Woolypally", "Xanu", "Hauganzki", "Bishye", "Graier", "Moccasin", "Abelinc", "Ballentine", "Gudstad", "Jaini", "Loiuz", "Obamna", "Shelobb", "Valaeryon", "Vims", "Dotandrot", "Humawarr", "Rissie", "Aragones", "Bartimaeus", "Bezzul", "Casperikzz", "Gvim", "Izmailovsky", "Magegrimm", "Magicworx", "Moondian", "Nighthero", "Noccostab", "Nusstraa", "Smoofinator", "Spacebandito", "Storyteller", "Zalsa", "Bitstar", "Lohkkar", "Naage", "Oldator", "Viagrah", "Gulow", "Antche", "Blixlock", "Frisk", "Gafr", "Komsika", "Podra", "Razolea", "Vende", "Ciormola", "Crittney", "Mortimati", "Môrci", "Roguinaa", "Silverpond", "Twodaggers", "Knockmeup", "Zabishii", "Vendictus", "Iater", "Brenton", "Nitugardy", "Palba", "Gavun", "Kialya", "Antimagic", "Chanasiel", "Fachilla", "Ixina", "Robix", "Stabillie", "Abuseed", "Dewyy", "Duskling", "Dørin", "Feeris", "Nordh", "Ríott", "Philthewise", "Fetu", "Shocktherapy", "Stolnikova", "Ælizabeth", "Bággen", "Doomhart", "Greyarrows", "Ksiadzropak", "Poppetje", "Doomterror", "Drackyy", "Eian", "Grzess", "Invisbull", "Jellolita", "Kristitty", "Roggor", "Ruthlexx", "Sithila", "Sóknardalr", "Theogwain", "Saffyr", "Hánna", "Jbelle", "Jeani", "Likkle", "Räkpaj", "Tidanbo", "Yimza", "Freÿ", "Trustycar", "Fatjoeynt", "Hordahunter", "Yæsh", "Asharam", "Furyseth", "Holypaladina", "Lynorah", "Marindari", "Rogergoat", "Siegmar", "Sydsvenskan", "Zyxell", "Anareon", "Frostartist", "Husqie", "Beckyw", "Benesia", "Citral", "Gamlekælling", "Mattfr", "Neemi", "Slivia", "Sugardeek", "Priestiance", "Sapthis", "Fingerfet", "Bolveg", "Stanozolol", "Sint", "Saray", "Airness", "Astorah", "Shushi", "Antec", "Bimodood", "Harrolight", "Immodicus", "Kaffehunt", "Lilfosschamp", "Marlypie", "Telyssra", "Wìla", "Bearnoods", "Axvend", "Kallepedal", "Karhukukka", "Myatadrol", "Supro", "Vápour", "Dunkeen", "Xokillerxo", "Palypoes", "Rhagnor", "Moonlocks", "Wusimi", "Taomon", "Zeroheals", "Bestwar", "Suoma", "Termynator", "Feysun", "Dominant", "Msworld", "Swóópy", "Bobiko", "Barawi", "Inm", "Matasuntha", "Stèphaniè", "Grimsteel", "Elephantg", "Laxanopita", "Twiggysmalls", "Tyrâêl", "Aatwo", "Aethra", "Borrelia", "Darkwave", "Dwarfkey", "Indamind", "Jass", "Manadust", "Morphyel", "Muiradin", "Ricktempo", "Saganaki", "Shadeeye", "Tatoasa", "Tendarigodx", "Thengel", "Zyvistrasza", "Fryeshame", "Mwstealthy", "Shanyenresto", "Tokiuo", "Apelmia", "Shacaca", "Atlaforn", "Defyingdeath", "Stener", "Thovirr", "Valruin", "Érmåc", "Bisprist", "Bispriest", "Darkguy", "Parasoll", "Örngott"], 
+"Settings" : {"stdacc" : 1, "title" : "Little Nyx EPGP", "style" : "font-weight: 100; font-size: 100", "theme" : "darkly", "lang" : "en", "tag" : "DKP"}, 
+"Corrections" : {"players" : {"0" : "?", "31" : "Jwarrior", "2" : "Knockmeup", "8" : "Rhagnor", "32" : "Tidanbo", "33" : "Bobiko", "34" : "Luandra", "35" : "Volrik", "9" : "Palba", "36" : "Astorah", "37" : "Bagts", "38" : "Breadshadow", "39" : "Eclipce", "10" : "Soggypants", "40" : "Fauxxy", "41" : "Locktorius", "42" : "Maclourion", "43" : "Mygrain", "11" : "Ælizabeth", "44" : "Palypoes", "45" : "Paynz", "46" : "Imbalgin", "3" : "Opaq", "12" : "Zabishii", "48" : "Airness", "49" : "Ballentine", "50" : "Dremdra", "51" : "Frostartist", "13" : "Mythria", "52" : "Razolea", "53" : "Yimza", "54" : "Zyxell", "55" : "Furtwentea", "14" : "Eragoniz", "56" : "Husqie", "57" : "Hánna", "58" : "Jeani", "59" : "Morpeeus", "15" : "Carebeared", "60" : "Saffyr", "61" : "Tikkah", "1" : "Ejectoseato", "4" : "Vrilya", "16" : "Daffke", "64" : "Spoinky", "65" : "Stèphaniè", "66" : "Trustycar", "17" : "Vendictus", "68" : "Avellin", "69" : "Krepe", "70" : "Nexensis", "18" : "Caberyreason", "72" : "Calibow", "73" : "Barawi", "74" : "Dracio", "19" : "Sint", "76" : "Gamlekælling", "77" : "Hakos", "5" : "Animelove", "20" : "Nattlys", "80" : "Baeleef", "81" : "Codzerra", "82" : "Dhaze", "21" : "Eggnbacon", "84" : "Laniakaia", "85" : "Leywen", "86" : "Moelven", "22" : "Malgeth", "23" : "Matoo", "6" : "Lamishra", "24" : "Fêar", "25" : "Ksiadzropak", "26" : "Doomhart", "27" : "Hánna", "7" : "Saray", "28" : "Räkpaj", "83" : "Gryts", "79" : "Sebcioch", "78" : "Pnda", "29" : "Shushi", "75" : "Flexyjade", "71" : "Aaliyah", "67" : "Psketti", "30" : "Misandri", "63" : "Hazeroth", "47" : "Freÿ"}, "list" : [{"players" : [71], "gp" : 0, "ep" : 19, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [5], "gp" : 0, "ep" : 115, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [68], "gp" : 0, "ep" : 0, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [80], "gp" : 0, "ep" : 58, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [37], "gp" : 0, "ep" : 116, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [38], "gp" : 0, "ep" : 85, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [72], "gp" : 0, "ep" : 25, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [81], "gp" : 0, "ep" : 0, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [82], "gp" : 0, "ep" : 29, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [50], "gp" : 0, "ep" : 67, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [39], "gp" : 0, "ep" : 87, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [1], "gp" : 0, "ep" : 102, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [14], "gp" : 0, "ep" : 25, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [40], "gp" : 0, "ep" : 113, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [75], "gp" : 0, "ep" : 49, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [55], "gp" : 0, "ep" : 33, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [83], "gp" : 0, "ep" : 29, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [77], "gp" : 0, "ep" : 58, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [63], "gp" : 0, "ep" : 30, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [46], "gp" : 0, "ep" : 44, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [31], "gp" : 0, "ep" : 113, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [69], "gp" : 0, "ep" : 0, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [6], "gp" : 0, "ep" : 117, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [84], "gp" : 0, "ep" : 58, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [85], "gp" : 0, "ep" : 17, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [41], "gp" : 0, "ep" : 76, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [34], "gp" : 0, "ep" : 62, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [42], "gp" : 0, "ep" : 56, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [22], "gp" : 0, "ep" : 53, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [30], "gp" : 0, "ep" : 85, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [86], "gp" : 0, "ep" : 0, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [59], "gp" : 0, "ep" : 51, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [43], "gp" : 0, "ep" : 65, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [13], "gp" : 0, "ep" : 80, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [70], "gp" : 0, "ep" : 5, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [45], "gp" : 0, "ep" : 44, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [78], "gp" : 0, "ep" : 54, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [67], "gp" : 0, "ep" : 29, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [79], "gp" : 0, "ep" : 5, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [61], "gp" : 0, "ep" : 61, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [35], "gp" : 0, "ep" : 67, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}, {"players" : [4], "gp" : 0, "ep" : 117, "timestamp" : "2022-09-22 01:00", "reason" : "Bonus 10 EP from TBC", "account" : 1}]}, 
+"Bosses" : {"0" : "?", "2" : {"en" : "The Three Drakes", "de" : "Die Drei Drachen"}, "4" : {"en" : "Huhuran/Viscidus"}, "1606" : {"en" : "Loatheb", "points" : 20, "accounts" : [1]}, "1607" : {"en" : "Razuvious", "points" : 10, "accounts" : [1]}, "1608" : {"en" : "Gothik", "points" : 15, "accounts" : [1]}, "1609" : {"en" : "Horsemen", "points" : 20, "de" : "Reiter", "accounts" : [1]}, "1610" : {"en" : "Patchwerk", "points" : 15, "de" : "Flickwerk", "accounts" : [1]}, "1611" : {"en" : "Grobbulus", "points" : 10, "accounts" : [1]}, "1612" : {"en" : "Gluth", "points" : 10, "accounts" : [1]}, "1613" : {"en" : "Thaddius", "points" : 15, "accounts" : [1]}, "1614" : {"en" : "Sapphiron", "points" : 20, "accounts" : [1]}, "1615" : {"en" : "Kel'Thuzad", "points" : 25, "accounts" : [1]}, "1616" : {"en" : "Sartharion", "points" : 25, "accounts" : [1]}, "1617" : {"en" : "Malygos", "points" : 25, "accounts" : [1]}, "903" : {"en" : "First time kill bonus", "points" : 15, "accounts" : [1]}, "3" : {"en" : "All Bosses", "de" : "Alle Bosse"}, "904" : {"en" : "Time bonus: Progress", "points" : 50, "accounts" : [1]}, "902" : {"en" : "Time bonus", "points" : 10, "accounts" : [1]}, "901" : {"en" : "End raid bonus", "points" : 10, "accounts" : [1]}, "900" : {"en" : "On time bonus", "points" : 10, "accounts" : [1]}, "1605" : {"en" : "Heigan", "points" : 10, "accounts" : [1]}, "1604" : {"en" : "Noth", "points" : 10, "accounts" : [1]}, "1603" : {"en" : "Maexxna", "points" : 15, "accounts" : [1]}, "1601" : {"en" : "Anub'Rekhan", "points" : 10, "accounts" : [1]}, "1602" : {"en" : "Faerlina", "points" : 10, "accounts" : [1]}, "1" : {"en" : "Trash"}}, 
+"Accounts" : {"0" : "?", "1" : {"name" : "Phase 1", "basegp" : 500}}, 
+"Classes" : {"0" : "?", "7" : {"en" : "Shaman", "de" : "Schamane", "color" : "#2359FF"}, "1" : {"en" : "Druid", "de" : "Druide", "color" : "#FF7C0A"}, "2" : {"en" : "Hunter", "de" : "Jäger", "color" : "#AAD372"}, "4" : {"en" : "Paladin", "color" : "#F48CBA"}, "8" : {"en" : "Warlock", "de" : "Hexenmeister", "color" : "#9382C9"}, "9" : {"en" : "Warrior", "de" : "Krieger", "color" : "#C69B6D"}, "5" : {"en" : "Priest", "de" : "Priester", "color" : "inherit"}, "3" : {"en" : "Mage", "de" : "Magier", "color" : "#3FC7EB"}, "6" : {"en" : "Rogue", "de" : "Schurke", "color" : "#E9D700"}}, 
+"Types" : {"0" : "?", "2" : {"en" : "Leather", "de" : "Leder"}, "4" : {"en" : "Plate", "de" : "Platte"}, "8" : {"en" : "Mace", "de" : "Streitkolben"}, "16" : {"en" : "Trown", "de" : "Wurfwaffe"}, "17" : {"en" : "Shield", "de" : "Schild"}, "9" : {"en" : "Polearm", "de" : "Stangenwaffe"}, "18" : {"en" : "Token", "de" : "Marke"}, "5" : {"en" : "Dagger", "de" : "Dolch"}, "10" : {"en" : "Staff", "de" : "Stab"}, "11" : {"en" : "Fist Weapon", "de" : "Faustwaffe"}, "3" : {"en" : "Mail", "de" : "Kette"}, "6" : {"en" : "Sword", "de" : "Schwert"}, "12" : {"en" : "Bow", "de" : "Bogen"}, "13" : {"en" : "Crossbow", "de" : "Armbrust"}, "7" : {"en" : "Axe", "de" : "Axt"}, "14" : {"en" : "Gun", "de" : "Schusswaffe"}, "15" : {"en" : "Wand", "de" : "Zauberstab"}, "1" : {"en" : "Cloth", "de" : "Stoff"}}
+};
+// END IMPORTED DATA /////////////////////////////////////////////
+
+      $scope.lang = $scope.data.Settings.lang || "en";
+      $scope.host = "www.wowhead.com";
+
+      $scope.account = "" + $scope.data.Settings.stdacc;
+      $scope.accounts = [];
+      var acc = $scope.data.Accounts;
+      for (id in acc)
+        if (id > 0)
+          $scope.accounts.push({id : id, name : acc[id].name});
+      $scope.accounts.sort(function(a, b) { return a.id - b.id; });
+
+      ////////////////////////////////////////////////////////////
+      // CHAR LIST ///////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////
+
+      $scope.char = {};
+      $scope.char.search = "";
+      $scope.char.sort = "nickname";
+      $scope.char.list = [];
+      $scope.char.score = null;
+      $scope.char.total = null;
+      $scope.char.stats = null;
+
+      ////////////////////////////////////////////////////////////
+
+      var ResetChar = function() {
+        $scope.char.score = [];
+        $scope.char.total = {count : 0, items : 0, ep : 0, gp : 0, points : 0};
+        $scope.char.stats = {name : "", kills : [], items : []};
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      var Truncate = function(n) {
+        return Math.floor(1000 * n) / 1000;
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      $scope.Translate = function(obj, idx) {
+        if (!obj) return "";
+        if (!obj[idx]) return "";
+
+        var lang = $scope.lang;
+        if (!obj[idx][lang]) lang = "en";
+        if (!obj[idx][lang]) return "";
+
+        return obj[idx][lang];
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      $scope.RefreshCharList = function() {
+        var raids = $scope.data.Raids;
+        var tags  = $scope.char.search.toLowerCase().split(" ");
+        var list  = [];
+
+        var total = {
+          items : 0,
+          ep : 0,
+          gp : 0,
+          points : 0
+        };
+
+        for (var name in $scope.char.score) {
+          var line = $scope.char.score[name];
+          var incl = $scope.char.search.length < 3;
+
+          tags.forEach(tag => {
+            if (tag.length < 3) return;
+            if (line.name.toLowerCase().includes(tag)) incl = true;
+            if (line.nickname.toLowerCase().includes(tag)) incl = true;
+            if (line.classname.toLowerCase().includes(tag)) incl = true;
+            if (line.role.toLowerCase().includes(tag)) incl = true;
+          });
+
+          if (!incl) continue;
+          total.items += line.items;
+          total.ep += line.ep;
+          total.gp += line.gp;
+          list.push(line);
+        }
+
+        total.count = list.length;
+        if (total.gp > 0)
+          total.points = Truncate(total.ep / total.gp);
+
+        $scope.char.list = list;
+        $scope.char.total = total;
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      var InitPlayerScore = function(name) {
+        if ($scope.char.score[name]) return;
+        var roster  = $scope.data.Roster;
+        var classes = $scope.data.Classes;
+        var roles = $scope.data.Roles;
+        var inactive = $scope.data.Inactive;
+
+        // ignore inactive players!
+        if (inactive.includes(name)) return false;
+
+        var obj = {
+          name : name,
+          nickname : "",
+          classname : "",
+          color : "#808080",
+          role : "",
+          kills : 0,
+          items : 0,
+          ep : 0,
+          gp : $scope.data.Accounts[$scope.account].basegp,
+          points : 0,
+        };
+
+        var player = roster[name];
+        if (player) {
+          if (player.nickname) obj.nickname = player.nickname;
+
+          obj.role = $scope.Translate(roles, player.role);
+          
+          var playerclass = classes[player.xclass];
+          if (playerclass) {
+            obj.classname = $scope.Translate(classes, player.xclass);
+            obj.color = playerclass.color;
+          }
+        }
+
+        if (obj.nickname == "")
+          obj.nickname = obj.name;
+
+        $scope.char.score[name] = obj;
+        return true;
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      var BuildScore = function() {
+
+        ResetChar();
+
+        var raids   = $scope.data.Raids;
+        var items   = $scope.data.Items;
+        var corrs   = $scope.data.Corrections;
+        var bosses  = $scope.data.Bosses;
+        var score   = $scope.char.score;
+        var account = parseInt($scope.account);
+
+        // gather data going through all raids...
+        raids.forEach(raid => {
+          var players = raid.players;
+          var kills   = raid.kills;
+          var drops   = raid.drops;
+
+          // get boss kills
+          kills.forEach(kill => {
+            var multi = kill.multi ? kill.multi : 1;
+            kill.players.forEach(player => {
+              var name = players[player];
+              if (name == null) return; // ignore unknown players
+
+              // only add bosses that belong to the selected account
+              var boss = bosses[kill.boss];
+              if (boss.accounts.includes(account)) {
+                if (InitPlayerScore(name) == false) return;
+                score[name].kills += 1;
+                score[name].ep += boss.points * multi; // add points for that boss!
+              }
+            });
+          });
+
+          // get dropped items
+          drops.forEach(drop => {
+            var name = players[drop.player];
+            if (name == null) return; // ignore unknown players
+
+            var item = items[drop.item]; // ignore unknown items
+            if (item == null) return;
+
+            var multi = drop.multi ? drop.multi : 1;
+
+            // only add items that belong to the selected account
+            if (account == item.account) {
+              if (InitPlayerScore(name) == false) return;
+              score[name].items += 1;
+              score[name].gp += item.cost * multi;
+            }
+          });
+        });
+
+        // apply corrections
+        corrs.list.forEach(line => {
+          if (typeof line.players != "object") return;
+          line.players.forEach(player => {
+            var name = corrs.players[player];
+            if (line.account == account) {
+              if (InitPlayerScore(name) == false) return;
+              score[name].ep += line.ep;
+              score[name].gp += line.gp;
+            }
+          });
+        });
+
+        // calculate points
+        for (var name in score)
+          if (score[name].gp > 0)
+            score[name].points = Truncate(score[name].ep / score[name].gp);
+
+        // refresh char list
+        $scope.RefreshCharList()
+      }
+
+      ////////////////////////////////////////////////////////////
+      // CHAR POPUP //////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////
+
+      var RefreshCharStats = function(name) {
+        var raids   = $scope.data.Raids;
+        var items   = $scope.data.Items;
+        var corrs   = $scope.data.Corrections;
+        var bosses  = $scope.data.Bosses;
+        var stats   = $scope.char.stats;
+        var account = parseInt($scope.account);
+
+        // reset stats
+        stats.name  = name;
+        stats.kills = [];
+        stats.items = [];
+        stats.kcorr = [];
+        stats.icorr = [];
+        stats.ktot1 = 0;
+        stats.ktot2 = 0;
+        stats.itot1 = 0;
+        stats.itot2 = 0;
+
+        // gather stats going through all raids...
+        raids.forEach(raid => {
+          var players = raid.players;
+          var kills   = raid.kills;
+          var drops   = raid.drops;
+
+          // find playerid!
+          var playerid = -1;
+          for (k in players)
+            if (players[k] == name) playerid = parseInt(k);
+
+          // was player in raid?
+          if (playerid == -1) return;
+
+          // get boss kills
+          kills.forEach(kill => {
+            var bossname = $scope.Translate(bosses, kill.boss);
+            var boss = bosses[kill.boss];
+            var multi = kill.multi ? kill.multi : 1;
+            if (boss.accounts.includes(account)) {
+              if (kill.players.includes(playerid)) {
+                stats.kills.push({
+                  timestamp : kill.timestamp,
+                  bossname  : bossname,
+                  points    : boss.points * multi,
+                });
+                stats.ktot1 += boss.points * multi;
+              }
+            }
+          });
+
+          // get dropped items
+          drops.forEach(drop => {
+            var itemname = "Unknown Item " + drop.item;
+            var itemcost = 0;
+            var multi = drop.multi ? drop.multi : 1;
+
+            var item = items[drop.item];
+            if (item == null) return;
+            if (item) itemname = item.name;
+            if (item) itemcost = item.cost;
+
+            if (account == item.account) {
+              if (drop.player == playerid) {
+                stats.items.push({
+                  timestamp : drop.timestamp,
+                  itemname  : itemname,
+                  itemcost  : itemcost * multi,
+                  itemid    : drop.item,
+                });
+                stats.itot1 += itemcost * multi;
+              }
+            }
+          });
+        });
+
+        // apply corrections
+        corrs.list.forEach(line => {
+          if (typeof line.players != "object") return;
+          line.players.forEach(player => {
+            if (name != corrs.players[player]) return;
+            if (line.account != account) return;
+
+            if (line.ep != 0) stats.kcorr.push({
+              timestamp : line.timestamp,
+              ep        : line.ep,
+              reason    : line.reason,
+            });
+
+            if (line.gp != 0) stats.icorr.push({
+              timestamp : line.timestamp,
+              gp        : line.gp,
+              reason    : line.reason,
+            });
+
+            stats.ktot2 += line.ep;
+            stats.itot2 += line.gp;
+          });
+        });
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      $scope.KillsClick = function(name) {
+        RefreshCharStats(name);
+        $("#kills_popup").modal();
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      $scope.ItemsClick = function(name) {
+        RefreshCharStats(name);
+        $("#items_popup").modal();
+      }
+
+      ////////////////////////////////////////////////////////////
+      // ITEM LIST ///////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////
+
+      $scope.item = {};
+      $scope.item.search = "";
+      $scope.item.sort = "name";
+      $scope.item.list = [];
+      $scope.item.inventory = null;
+      $scope.item.stats = null;
+
+      ////////////////////////////////////////////////////////////
+
+      var ResetItem = function() {
+        $scope.item.inventory = {};
+        $scope.item.stats = {};
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      $scope.RefreshItemList = function() {
+        var inventory = $scope.item.inventory;
+        var tags = $scope.item.search.toLowerCase().split(" ");
+        var list = [];
+        var empty = false;
+
+        // available filters
+        var filter = {
+          name   : [],
+          boss   : [],
+          xtype  : [],
+          slot   : [],
+          xclass : [],
+        };
+
+        // sort tags into filter buckets (according to best partial/full match count)
+        tags.forEach(tag => {
+          var full = false;
+          var last = 0;
+          var best = null;
+
+          // ignore short tags
+          if (tag.length < 3) return;
+
+          // go through columns...
+          for (var col in filter) {
+            var cnt = 0;
+
+            // go through rows...
+            for (var id in inventory) {
+              var row = inventory[id];
+              var val = row[col];
+
+              // count partial matches
+              if (!full && val.toLowerCase().includes(tag)) cnt++;
+
+              // count full matches
+              if (val.toLowerCase() == tag) {
+                if (!full) cnt = 0;
+                full = true;
+                cnt++;
+              }
+            }
+
+            // record best match!
+            if (cnt > last) {
+              last = cnt;
+              best = col;
+            }
+          }
+
+          if (best) filter[best].push(tag);
+          else empty = true;
+        });
+
+        // go through rows...
+        if (!empty) {
+          for (var id in inventory) {
+            var row = inventory[id];
+            var keep = true;
+
+            // go through columns...
+            for (col in filter) {
+              var incl = filter[col].length == 0;
+
+              // go though tags...
+              filter[col].forEach(tag => {
+
+                // find at least one match...
+                if (row[col].toLowerCase().includes(tag)) incl = true;
+              });
+
+              // ...to keep the row
+              if (!incl) keep = false;
+            }
+
+            // add row to list!
+            if (keep) list.push(row);
+          }
+        }
+
+        $scope.item.list = list;
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      $scope.RefreshItemList_Old = function() {
+        var inventory = $scope.item.inventory;
+        var tags = $scope.item.search.toLowerCase().split(" ");
+        var list = [];
+
+        for (var id in inventory) {
+          var line = inventory[id];
+          var incl = $scope.item.search.length < 2;
+
+          tags.forEach(tag => {
+            if (line.cost == tag) incl = true;
+            if (tag.length < 2) return;
+
+            if (line.name.toLowerCase().includes(tag)) incl = true;
+            if (line.boss.toLowerCase().includes(tag)) incl = true;
+            if (line.xtype.toLowerCase().includes(tag)) incl = true;
+            if (line.slot.toLowerCase().includes(tag)) incl = true;
+            if (line.xclass.toLowerCase().includes(tag)) incl = true;
+          });
+
+          if (!incl) continue;
+          list.push(line);
+        }
+
+        $scope.item.list = list;
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      var BuildInventory = function() {
+
+        ResetItem();
+
+        var raids     = $scope.data.Raids;
+        var items     = $scope.data.Items;
+        var bosses    = $scope.data.Bosses;
+        var slots     = $scope.data.Slots;
+        var types     = $scope.data.Types;
+        var classes   = $scope.data.Classes;
+        var inventory = $scope.item.inventory;
+        var account   = parseInt($scope.account);
+
+        // add items to inventory
+        for (var id in items) {
+          var item = items[id];
+          if (item.account == account) {
+            inventory[id] = {
+              id      : id,
+              name    : item.name,
+              count   : 0,
+              players : [],
+              bossid  : item.boss,
+              boss    : $scope.Translate(bosses, item.boss),
+              slot    : $scope.Translate(slots, item.slot),
+              xtype   : $scope.Translate(types, item.xtype),
+              xclass  : $scope.Translate(classes, item.xclass),
+              cost    : item.cost,
+              note    : item.note || "",
+            };
+          };
+        }
+
+        // go through all raids...
+        raids.forEach(raid => {
+
+          // add drops to inventory
+          raid.drops.forEach(drop => {
+            var item = inventory[drop.item];
+            var name = raid.players[drop.player];
+            if (!item || !name) return;
+            item.players.push({
+              timestamp : drop.timestamp,
+              name      : name,
+            });
+            item.count = item.players.length;
+          });
+        });
+
+        $scope.RefreshItemList();
+      }
+
+      ////////////////////////////////////////////////////////////
+      // ITEM POPUP //////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////
+
+      $scope.PlayersClick = function(id) {
+        $scope.item.stats = $scope.item.inventory[id];
+        $("#players_popup").modal();
+      }
+
+      ////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////
+
+      $scope.SortList = function(obj, column, asc) {
+        if (obj.sort == column) {
+          obj.sort = "-" + column;
+          return;
+        }
+
+        if (obj.sort == "-" + column) {
+          obj.sort = column;
+          return;
+        }
+
+        obj.sort = "-" + column;
+        if (asc) obj.sort = column;
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      $scope.ChangeAccount = function() {
+        BuildScore();
+        BuildInventory();
+      }
+
+      ////////////////////////////////////////////////////////////
+
+      $scope.ChangeAccount();
+
+    });
+
+  </script>
+
+  <script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>
+  <script src="https://wow.zamimg.com/widgets/power.js"></script>
+
+</div>
+</body>
+</html>
